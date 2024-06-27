@@ -1,0 +1,119 @@
+basePath: /api/v1
+definitions:
+  controllers.Comment:
+    properties:
+      author:
+        example: John
+        type: string
+      created_at:
+        example: "2022-01-01T12:00:00Z"
+        type: string
+      id:
+        example: 1
+        type: integer
+      message:
+        example: Hello
+        type: string
+    type: object
+  controllers.CommentRequest:
+    properties:
+      message:
+        example: Hello
+        type: string
+    type: object
+  controllers.CommentResponse:
+    properties:
+      message:
+        example: "1"
+        type: string
+    type: object
+  controllers.CommentsResponse:
+    properties:
+      comments:
+        items:
+          $ref: '#/definitions/controllers.Comment'
+        type: array
+    type: object
+  controllers.LoginRequest:
+    properties:
+      password:
+        example: password
+        type: string
+      username:
+        example: user1
+        type: string
+    type: object
+  controllers.LoginResponse:
+    properties:
+      token:
+        example: abc123
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a sample server for a Gin-Gonic API with gRPC integration.
+  title: Gin-Gonic API with gRPC
+  version: "1.0"
+paths:
+  /comments:
+    get:
+      description: 獲取留言
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.CommentsResponse'
+      summary: 獲取留言
+      tags:
+      - 留言
+    post:
+      consumes:
+      - application/json
+      description: 發布留言
+      parameters:
+      - description: 留言内容
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.CommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.CommentResponse'
+      summary: 發布留言
+      tags:
+      - 留言
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: 登入
+      parameters:
+      - description: login
+        in: body
+        name: username
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.LoginResponse'
+      summary: 登入
+      tags:
+      - 使用者
+swagger: "2.0"

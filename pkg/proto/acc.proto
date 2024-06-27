@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package proto;
+option go_package = "/pkg/proto;proto";
+
+service AccountService {
+    rpc Login (LoginRequest) returns (LoginResponse);
+    rpc PostComment (CommentRequest) returns (CommentResponse);
+    rpc GetComments (CommentsRequest) returns (CommentsResponse);
+}
+
+message LoginRequest {
+    string username = 1;
+    string password = 2;
+}
+
+message LoginResponse {
+    string message = 1; 
+}
+
+message CommentRequest {
+    string username = 1;
+    string comment = 2;
+}
+
+message CommentResponse {
+    string message = 1; 
+}
+
+message CommentsRequest {
+    string username = 1;
+}
+
+message CommentsResponse {
+    repeated string comments = 1;
+}
+
