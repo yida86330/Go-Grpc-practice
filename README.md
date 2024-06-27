@@ -15,5 +15,5 @@ source ~/.bashrc
 
 使用以下指令來生成 Go 文件
 cd ~/go_grpc_practice
-protoc --proto_path=/home/tofu/go_grpc_practice/pkg/proto --go_out=. ~/go_grpc_practice/pkg/proto/*.proto
-protoc --proto_path=/home/tofu/go_grpc_practice/pkg/proto --go-grpc_out=. ~/go_grpc_practice/pkg/proto/*.proto
+protoc --proto_path=/home/tofu/go_grpc_practice/internal/proto --go_out=. ~/go_grpc_practice/internal/proto/*.proto
+protoc --proto_path=/home/tofu/go_grpc_practice/internal/proto --go-grpc_out=. ~/go_grpc_practice/internal/proto/*.proto

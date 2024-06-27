@@ -2,16 +2,10 @@ package main
 
 import (
 	"log"
-	"net"
 
-	"go_grpc_practice/pkg/controllers"
-	docs "go_grpc_practice/pkg/docs"
-	"go_grpc_practice/pkg/grpc_service"
-	pb "go_grpc_practice/pkg/proto"
+	"go_grpc_practice/internal/grpc_server"
+	"go_grpc_practice/pkg/gin_service"
 
-	"github.com/gin-gonic/gin"
-	swaggerfiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -24,17 +18,7 @@ import (
 
 func main() {
 	// 初始化 gRPC server
-	lis, err := net.Listen("tcp", ":50051")
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
-	s := grpc.NewServer()
-	pb.RegisterAccountServiceServer(s, &grpc_service.Server{})
-	go func() {
-		if err := s.Serve(lis); err != nil {
-			log.Fatalf("failed to serve: %v", err)
-		}
-	}()
+	grpc_server.StartServer()
 
 	// gRPC client
 	conn, err := grpc.NewClient(":50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -42,21 +26,8 @@ func main() {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
-	controllers.InitGRPCClient(conn)
+	gin_service.InitGRPCClient(conn)
 
 	// Gin server
-	router := gin.Default()
-	docs.SwaggerInfo.BasePath = "/api/v1"
-
-	v1 := router.Group("/api/v1")
-	{
-		v1.POST("/login", controllers.Login)
-		v1.GET("/comments", controllers.GetComments)
-		v1.POST("/comments", controllers.PostComment)
-	}
-
-	// Swagger route
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
-
-	router.Run(":8080")
+	gin_service.Start("8080")
 }

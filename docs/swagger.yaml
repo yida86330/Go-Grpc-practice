@@ -1,0 +1,99 @@
+basePath: /api/v1
+definitions:
+  gin_service.Comment:
+    properties:
+      id:
+        example: "1"
+        type: string
+      message:
+        example: test msg
+        type: string
+    type: object
+  gin_service.httpResponse:
+    properties:
+      response:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a sample server for a Gin-Gonic API with gRPC integration.
+  title: Gin-Gonic API with gRPC
+  version: "1.0"
+paths:
+  /comment:
+    post:
+      consumes:
+      - application/json
+      description: 新增留言
+      parameters:
+      - description: Create comment
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/gin_service.Comment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gin_service.httpResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin_service.httpResponse'
+      summary: 新增留言
+      tags:
+      - 留言
+  /comment/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 刪除留言
+      parameters:
+      - description: comment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gin_service.httpResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin_service.httpResponse'
+      summary: 刪除留言
+      tags:
+      - 留言
+    get:
+      consumes:
+      - application/json
+      description: 獲取留言
+      parameters:
+      - description: comment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gin_service.httpResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin_service.httpResponse'
+      summary: 獲取留言
+      tags:
+      - 留言
+swagger: "2.0"
