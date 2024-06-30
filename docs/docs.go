@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/gin_service.Comment"
+                            "$ref": "#/definitions/models.Comment"
                         }
                     }
                 ],
@@ -131,23 +131,21 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "gin_service.Comment": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string",
-                    "example": "1"
-                },
-                "message": {
-                    "type": "string",
-                    "example": "test msg"
-                }
-            }
-        },
         "gin_service.httpResponse": {
             "type": "object",
             "properties": {
                 "response": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Comment": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "message": {
                     "type": "string"
                 }
             }

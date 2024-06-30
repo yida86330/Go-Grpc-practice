@@ -3,9 +3,9 @@ package proto;
 option go_package = "/internal/proto;proto";
 
 service CommentService {;
-    rpc Create(Comment) returns (CreateCommentResponse) {}
-    rpc Get(GetCommentRequest) returns (GetCommentResponse) {}
-    rpc Delete(DeleteCommentRequest) returns (DeleteCommentResponse) {}
+    rpc CreateComment(Comment) returns (CreateCommentResponse) {}
+    rpc GetComment(GetCommentRequest) returns (GetCommentResponse) {}
+    rpc DeleteComment(DeleteCommentRequest) returns (DeleteCommentResponse) {}
 }
 
 message Comment{

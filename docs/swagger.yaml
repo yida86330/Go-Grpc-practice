@@ -1,17 +1,15 @@
 basePath: /api/v1
 definitions:
-  gin_service.Comment:
-    properties:
-      id:
-        example: "1"
-        type: string
-      message:
-        example: test msg
-        type: string
-    type: object
   gin_service.httpResponse:
     properties:
       response:
+        type: string
+    type: object
+  models.Comment:
+    properties:
+      id:
+        type: string
+      message:
         type: string
     type: object
 host: localhost:8080
@@ -32,7 +30,7 @@ paths:
         name: comment
         required: true
         schema:
-          $ref: '#/definitions/gin_service.Comment'
+          $ref: '#/definitions/models.Comment'
       produces:
       - application/json
       responses:

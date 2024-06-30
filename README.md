@@ -17,3 +17,11 @@ source ~/.bashrc
 cd ~/go_grpc_practice
 protoc --proto_path=/home/tofu/go_grpc_practice/internal/proto --go_out=. ~/go_grpc_practice/internal/proto/*.proto
 protoc --proto_path=/home/tofu/go_grpc_practice/internal/proto --go-grpc_out=. ~/go_grpc_practice/internal/proto/*.proto
+
+安裝GORM和SQLite
+go get -u gorm.io/gorm
+go get -u gorm.io/driver/sqlite
+
+安裝mysql
+sudo apt install mysql-server mysql-client
+sudo apt install libmysqlclient-dev

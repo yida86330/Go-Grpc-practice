@@ -2,38 +2,71 @@ package comment
 
 import (
 	"context"
+	"go_grpc_practice/internal/models"
 	pb "go_grpc_practice/internal/proto"
 )
+
+var dataComment CommentInterFace
+
+func init() {
+	dataComment = dataAccess{}
+}
 
 type Service struct {
 	pb.UnimplementedCommentServiceServer
 }
 
-func (s *Service) Create(ctx context.Context, req *pb.Comment) (*pb.CreateCommentResponse, error) {
-	// 模擬新建留言邏輯
+func (s *Service) CreateComment(ctx context.Context, comment *pb.Comment) (*pb.CreateCommentResponse, error) {
+	id := comment.Id
 
-	return &pb.CreateCommentResponse{Id: "new id", Response: "success"}, nil
+	newComment := &models.Comment{
+		ID:      id,
+		Message: comment.Message,
+	}
+
+	status := dataComment.CreateComment(*newComment)
+
+	return &pb.CreateCommentResponse{Id: newComment.ID, Response: status}, nil
 }
 
-func (s *Service) Get(ctx context.Context, req *pb.GetCommentRequest) (*pb.GetCommentResponse, error) {
+func (s *Service) GetComment(ctx context.Context, comment *pb.GetCommentRequest) (*pb.GetCommentResponse, error) {
 	// 模擬取得留言邏輯
-	id := req.Id
+	id := comment.Id
+	response, err := dataComment.GetComment(id)
 
-	comment := &pb.Comment{
-		Id:      id,
-		Message: "Get msg",
+	if err != nil {
+		return nil, err
 	}
-	return &pb.GetCommentResponse{Comment: comment}, nil
+
+	commentRes := &pb.Comment{
+		Id:      response.ID,
+		Message: response.Message,
+	}
+
+	return &pb.GetCommentResponse{Comment: commentRes}, nil
 
 }
 
-func (s *Service) Delete(ctx context.Context, req *pb.DeleteCommentRequest) (*pb.DeleteCommentResponse, error) {
+func (s *Service) DeleteComment(ctx context.Context, comment *pb.DeleteCommentRequest) (*pb.DeleteCommentResponse, error) {
 	// 模擬獲取留言記錄邏輯
-	id := req.Id
+	id := comment.Id
+	findComment, err := dataComment.GetComment(id)
 
-	delComment := &pb.DeleteCommentResponse{
-		Id:     id,
-		Status: "Delete Action",
+	if err != nil {
+		return nil, err
 	}
-	return delComment, nil
+
+	if findComment.ID == "" {
+		return &pb.DeleteCommentResponse{
+			Id:     id,
+			Status: "not found",
+		}, nil
+	}
+
+	dataComment.DeleteComment(findComment)
+
+	return &pb.DeleteCommentResponse{
+		Id:     findComment.ID,
+		Status: "Delete Action",
+	}, nil
 }

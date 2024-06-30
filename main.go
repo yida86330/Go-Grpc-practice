@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"go_grpc_practice/internal/database"
 	"go_grpc_practice/internal/grpc_server"
 	"go_grpc_practice/pkg/gin_service"
 
@@ -27,6 +28,9 @@ func main() {
 	}
 	defer conn.Close()
 	gin_service.InitGRPCClient(conn)
+
+	//Init Sqlite
+	database.InitMigrations()
 
 	// Gin server
 	gin_service.Start("8080")
