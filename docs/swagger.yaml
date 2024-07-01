@@ -94,6 +94,36 @@ paths:
       summary: 獲取留言
       tags:
       - 留言
+    put:
+      consumes:
+      - application/json
+      description: 更新留言
+      parameters:
+      - description: comment ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update message
+        in: body
+        name: message
+        required: true
+        schema:
+          $ref: '#/definitions/models.Comment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gin_service.httpResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin_service.httpResponse'
+      summary: 更新留言
+      tags:
+      - 留言
   /comments/:
     get:
       consumes:

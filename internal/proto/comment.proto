@@ -2,11 +2,12 @@ syntax = "proto3";
 package proto;
 option go_package = "/internal/proto;proto";
 
-service CommentService {;
-    rpc CreateComment(Comment) returns (CreateCommentResponse) {}
-    rpc GetComment(GetCommentRequest) returns (GetCommentResponse) {}
-    rpc ListComment(ListCommentRequest) returns (ListCommentResponse) {}
-    rpc DeleteComment(DeleteCommentRequest) returns (DeleteCommentResponse) {}
+service CommentService {
+    rpc Create(Comment) returns (CreateCommentResponse) {}
+    rpc Update(UpdateCommentRequest) returns (UpdateCommentResponse) {}
+    rpc Get(GetCommentRequest) returns (GetCommentResponse) {}
+    rpc List(ListCommentRequest) returns (ListCommentResponse) {}
+    rpc Delete(DeleteCommentRequest) returns (DeleteCommentResponse) {}
 }
 
 message Comment{
@@ -17,6 +18,16 @@ message Comment{
 message CreateCommentResponse{
   uint32 id = 1;
   string response = 2;
+}
+
+message UpdateCommentRequest{
+  uint32 id = 1;
+  string message = 2;
+}
+
+message UpdateCommentResponse{
+  uint32 id = 1;
+  string status = 2;
 }
 
 message GetCommentRequest{

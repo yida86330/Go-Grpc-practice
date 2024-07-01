@@ -16,7 +16,7 @@ type Service struct {
 	pb.UnimplementedCommentServiceServer
 }
 
-func (s *Service) CreateComment(ctx context.Context, comment *pb.Comment) (*pb.CreateCommentResponse, error) {
+func (s *Service) Create(ctx context.Context, comment *pb.Comment) (*pb.CreateCommentResponse, error) {
 	id := comment.Id
 
 	newComment := models.Comment{
@@ -24,14 +24,38 @@ func (s *Service) CreateComment(ctx context.Context, comment *pb.Comment) (*pb.C
 		Message: comment.Message,
 	}
 
-	status := dataComment.CreateComment(newComment)
+	status := dataComment.Create(newComment)
 
 	return &pb.CreateCommentResponse{Id: newComment.ID, Response: status}, nil
 }
 
-func (s *Service) GetComment(ctx context.Context, comment *pb.GetCommentRequest) (*pb.GetCommentResponse, error) {
+func (s *Service) Update(ctx context.Context, comment *pb.UpdateCommentRequest) (*pb.UpdateCommentResponse, error) {
 	id := comment.Id
-	response, err := dataComment.GetComment(id)
+	findComment, err := dataComment.Get(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if findComment == nil {
+		return &pb.UpdateCommentResponse{
+			Id:     id,
+			Status: "not found",
+		}, nil
+	}
+
+	findComment.Message = comment.Message
+	dataComment.Update(findComment)
+
+	return &pb.UpdateCommentResponse{
+		Id:     uint32(findComment.ID),
+		Status: "Update Action",
+	}, nil
+}
+
+func (s *Service) Get(ctx context.Context, comment *pb.GetCommentRequest) (*pb.GetCommentResponse, error) {
+	id := comment.Id
+	response, err := dataComment.Get(id)
 
 	if err != nil {
 		return nil, err
@@ -46,8 +70,8 @@ func (s *Service) GetComment(ctx context.Context, comment *pb.GetCommentRequest)
 
 }
 
-func (s *Service) ListComment(ctx context.Context, in *pb.ListCommentRequest) (*pb.ListCommentResponse, error) {
-	comments, err := dataComment.ListComment()
+func (s *Service) List(ctx context.Context, in *pb.ListCommentRequest) (*pb.ListCommentResponse, error) {
+	comments, err := dataComment.List()
 
 	if err != nil {
 		return nil, err
@@ -66,9 +90,9 @@ func (s *Service) ListComment(ctx context.Context, in *pb.ListCommentRequest) (*
 
 }
 
-func (s *Service) DeleteComment(ctx context.Context, comment *pb.DeleteCommentRequest) (*pb.DeleteCommentResponse, error) {
+func (s *Service) Delete(ctx context.Context, comment *pb.DeleteCommentRequest) (*pb.DeleteCommentResponse, error) {
 	id := comment.Id
-	findComment, err := dataComment.GetComment(id)
+	findComment, err := dataComment.Get(id)
 
 	if err != nil {
 		return nil, err
@@ -81,7 +105,7 @@ func (s *Service) DeleteComment(ctx context.Context, comment *pb.DeleteCommentRe
 		}, nil
 	}
 
-	dataComment.DeleteComment(findComment)
+	dataComment.Delete(findComment)
 
 	return &pb.DeleteCommentResponse{
 		Id:     uint32(findComment.ID),

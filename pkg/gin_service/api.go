@@ -2,6 +2,7 @@ package gin_service
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -31,7 +32,7 @@ type httpResponse struct {
 // @Success 200 {object} httpResponse
 // @Failure 400 {object} httpResponse
 // @Router /comment [post]
-func PostComment(c *gin.Context) {
+func CreateComment(c *gin.Context) {
 	commentModel := models.Comment{}
 	commentProto := &pb.Comment{}
 
@@ -45,8 +46,51 @@ func PostComment(c *gin.Context) {
 		return
 	}
 
-	res, err := grpcClient.CreateComment(context.Background(), commentProto)
+	res, err := grpcClient.Create(context.Background(), commentProto)
 
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
+// @Summary 更新留言
+// @Description 更新留言
+// @Tags 留言
+// @Accept   json
+// @Produce  json
+// @Param    id path string true "comment ID"
+// @Param    message body models.Comment true "Update message"
+// @Success 200 {object} httpResponse
+// @Failure	400 {object}  httpResponse
+// @Router /comment/{id} [put]
+func UpdateComment(c *gin.Context) {
+	commentModel := models.Comment{}
+	commentProto := &pb.UpdateCommentRequest{}
+
+	id := c.Param("id")
+	if id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID empty"})
+		return
+	}
+
+	idUint32, _ := strconv.ParseUint(id, 10, 32)
+
+	err := c.ShouldBindJSON(&commentModel)
+
+	commentProto.Id = uint32(idUint32)
+	commentProto.Message = commentModel.Message
+	log.Println(&commentModel)
+	log.Println(commentProto)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	res, err := grpcClient.Update(context.Background(), commentProto)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -78,7 +122,7 @@ func GetComment(c *gin.Context) {
 		Id: uint32(idUint32),
 	}
 
-	res, err := grpcClient.GetComment(context.Background(), req)
+	res, err := grpcClient.Get(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -97,7 +141,7 @@ func GetComment(c *gin.Context) {
 // @Router /comments/ [get]
 func ListComment(c *gin.Context) {
 
-	res, err := grpcClient.ListComment(context.Background(), &pb.ListCommentRequest{})
+	res, err := grpcClient.List(context.Background(), &pb.ListCommentRequest{})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -129,7 +173,7 @@ func DeleteComment(c *gin.Context) {
 		Id: uint32(idUint32),
 	}
 
-	res, err := grpcClient.DeleteComment(context.Background(), req)
+	res, err := grpcClient.Delete(context.Background(), req)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

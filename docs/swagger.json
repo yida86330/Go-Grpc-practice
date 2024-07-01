@@ -86,6 +86,51 @@
                     }
                 }
             },
+            "put": {
+                "description": "更新留言",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "留言"
+                ],
+                "summary": "更新留言",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "comment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update message",
+                        "name": "message",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Comment"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/gin_service.httpResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin_service.httpResponse"
+                        }
+                    }
+                }
+            },
             "delete": {
                 "description": "刪除留言",
                 "consumes": [
