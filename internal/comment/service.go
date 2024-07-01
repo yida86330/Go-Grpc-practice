@@ -19,18 +19,17 @@ type Service struct {
 func (s *Service) CreateComment(ctx context.Context, comment *pb.Comment) (*pb.CreateCommentResponse, error) {
 	id := comment.Id
 
-	newComment := &models.Comment{
+	newComment := models.Comment{
 		ID:      id,
 		Message: comment.Message,
 	}
 
-	status := dataComment.CreateComment(*newComment)
+	status := dataComment.CreateComment(newComment)
 
 	return &pb.CreateCommentResponse{Id: newComment.ID, Response: status}, nil
 }
 
 func (s *Service) GetComment(ctx context.Context, comment *pb.GetCommentRequest) (*pb.GetCommentResponse, error) {
-	// 模擬取得留言邏輯
 	id := comment.Id
 	response, err := dataComment.GetComment(id)
 
@@ -48,7 +47,6 @@ func (s *Service) GetComment(ctx context.Context, comment *pb.GetCommentRequest)
 }
 
 func (s *Service) ListComment(ctx context.Context, in *pb.ListCommentRequest) (*pb.ListCommentResponse, error) {
-	// 模擬取得留言邏輯
 	comments, err := dataComment.ListComment()
 
 	if err != nil {
@@ -69,7 +67,6 @@ func (s *Service) ListComment(ctx context.Context, in *pb.ListCommentRequest) (*
 }
 
 func (s *Service) DeleteComment(ctx context.Context, comment *pb.DeleteCommentRequest) (*pb.DeleteCommentResponse, error) {
-	// 模擬獲取留言記錄邏輯
 	id := comment.Id
 	findComment, err := dataComment.GetComment(id)
 
