@@ -9,6 +9,7 @@ import (
 func setRoutes(ginGroup *gin.RouterGroup) {
 	ginGroup.POST("/comment", PostComment)
 	ginGroup.GET("/comment/:id", GetComment)
+	ginGroup.GET("/comments/", ListComment)
 	ginGroup.DELETE("/comment/:id", DeleteComment)
 	ginGroup.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 }

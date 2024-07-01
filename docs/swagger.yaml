@@ -8,7 +8,7 @@ definitions:
   models.Comment:
     properties:
       id:
-        type: string
+        type: integer
       message:
         type: string
     type: object
@@ -92,6 +92,25 @@ paths:
           schema:
             $ref: '#/definitions/gin_service.httpResponse'
       summary: 獲取留言
+      tags:
+      - 留言
+  /comments/:
+    get:
+      consumes:
+      - application/json
+      description: 列出所有留言
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gin_service.httpResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gin_service.httpResponse'
+      summary: 列出所有留言
       tags:
       - 留言
 swagger: "2.0"

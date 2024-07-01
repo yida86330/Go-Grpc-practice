@@ -5,33 +5,41 @@ option go_package = "/internal/proto;proto";
 service CommentService {;
     rpc CreateComment(Comment) returns (CreateCommentResponse) {}
     rpc GetComment(GetCommentRequest) returns (GetCommentResponse) {}
+    rpc ListComment(ListCommentRequest) returns (ListCommentResponse) {}
     rpc DeleteComment(DeleteCommentRequest) returns (DeleteCommentResponse) {}
 }
 
 message Comment{
-  string id = 1;
+  uint32 id = 1;
   string message = 2;
 }
 
 message CreateCommentResponse{
-  string id = 1;
+  uint32 id = 1;
   string response = 2;
 }
 
 message GetCommentRequest{
-  string id = 1;
+  uint32 id = 1;
 }
 
 message GetCommentResponse{
   Comment comment = 1;
 }
 
+message ListCommentRequest{
+}
+
+message ListCommentResponse{
+  repeated Comment comments = 1;
+}
+
 message DeleteCommentRequest{
-  string id = 1;
+  uint32 id = 1;
 }
 
 message DeleteCommentResponse{
-  string id = 1;
+  uint32 id = 1;
   string status = 2;
 }
 

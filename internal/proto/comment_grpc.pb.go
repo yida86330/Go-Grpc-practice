@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion8
 const (
 	CommentService_CreateComment_FullMethodName = "/proto.CommentService/CreateComment"
 	CommentService_GetComment_FullMethodName    = "/proto.CommentService/GetComment"
+	CommentService_ListComment_FullMethodName   = "/proto.CommentService/ListComment"
 	CommentService_DeleteComment_FullMethodName = "/proto.CommentService/DeleteComment"
 )
 
@@ -30,6 +31,7 @@ const (
 type CommentServiceClient interface {
 	CreateComment(ctx context.Context, in *Comment, opts ...grpc.CallOption) (*CreateCommentResponse, error)
 	GetComment(ctx context.Context, in *GetCommentRequest, opts ...grpc.CallOption) (*GetCommentResponse, error)
+	ListComment(ctx context.Context, in *ListCommentRequest, opts ...grpc.CallOption) (*ListCommentResponse, error)
 	DeleteComment(ctx context.Context, in *DeleteCommentRequest, opts ...grpc.CallOption) (*DeleteCommentResponse, error)
 }
 
@@ -61,6 +63,16 @@ func (c *commentServiceClient) GetComment(ctx context.Context, in *GetCommentReq
 	return out, nil
 }
 
+func (c *commentServiceClient) ListComment(ctx context.Context, in *ListCommentRequest, opts ...grpc.CallOption) (*ListCommentResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListCommentResponse)
+	err := c.cc.Invoke(ctx, CommentService_ListComment_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *commentServiceClient) DeleteComment(ctx context.Context, in *DeleteCommentRequest, opts ...grpc.CallOption) (*DeleteCommentResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DeleteCommentResponse)
@@ -77,6 +89,7 @@ func (c *commentServiceClient) DeleteComment(ctx context.Context, in *DeleteComm
 type CommentServiceServer interface {
 	CreateComment(context.Context, *Comment) (*CreateCommentResponse, error)
 	GetComment(context.Context, *GetCommentRequest) (*GetCommentResponse, error)
+	ListComment(context.Context, *ListCommentRequest) (*ListCommentResponse, error)
 	DeleteComment(context.Context, *DeleteCommentRequest) (*DeleteCommentResponse, error)
 	mustEmbedUnimplementedCommentServiceServer()
 }
@@ -90,6 +103,9 @@ func (UnimplementedCommentServiceServer) CreateComment(context.Context, *Comment
 }
 func (UnimplementedCommentServiceServer) GetComment(context.Context, *GetCommentRequest) (*GetCommentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetComment not implemented")
+}
+func (UnimplementedCommentServiceServer) ListComment(context.Context, *ListCommentRequest) (*ListCommentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListComment not implemented")
 }
 func (UnimplementedCommentServiceServer) DeleteComment(context.Context, *DeleteCommentRequest) (*DeleteCommentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteComment not implemented")
@@ -143,6 +159,24 @@ func _CommentService_GetComment_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CommentService_ListComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListCommentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CommentServiceServer).ListComment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CommentService_ListComment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CommentServiceServer).ListComment(ctx, req.(*ListCommentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _CommentService_DeleteComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteCommentRequest)
 	if err := dec(in); err != nil {
@@ -175,6 +209,10 @@ var CommentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetComment",
 			Handler:    _CommentService_GetComment_Handler,
+		},
+		{
+			MethodName: "ListComment",
+			Handler:    _CommentService_ListComment_Handler,
 		},
 		{
 			MethodName: "DeleteComment",

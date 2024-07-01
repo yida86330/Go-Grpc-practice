@@ -128,6 +128,35 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/comments/": {
+            "get": {
+                "description": "列出所有留言",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "留言"
+                ],
+                "summary": "列出所有留言",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/gin_service.httpResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gin_service.httpResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -143,7 +172,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "id": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "message": {
                     "type": "string"

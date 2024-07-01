@@ -47,6 +47,27 @@ func (s *Service) GetComment(ctx context.Context, comment *pb.GetCommentRequest)
 
 }
 
+func (s *Service) ListComment(ctx context.Context, in *pb.ListCommentRequest) (*pb.ListCommentResponse, error) {
+	// 模擬取得留言邏輯
+	comments, err := dataComment.ListComment()
+
+	if err != nil {
+		return nil, err
+	}
+
+	var commentRes []*pb.Comment
+	for _, comment := range comments {
+		pbComment := &pb.Comment{
+			Id:      uint32(comment.ID),
+			Message: comment.Message,
+		}
+		commentRes = append(commentRes, pbComment)
+	}
+
+	return &pb.ListCommentResponse{Comments: commentRes}, nil
+
+}
+
 func (s *Service) DeleteComment(ctx context.Context, comment *pb.DeleteCommentRequest) (*pb.DeleteCommentResponse, error) {
 	// 模擬獲取留言記錄邏輯
 	id := comment.Id
@@ -56,7 +77,7 @@ func (s *Service) DeleteComment(ctx context.Context, comment *pb.DeleteCommentRe
 		return nil, err
 	}
 
-	if findComment.ID == "" {
+	if findComment == nil {
 		return &pb.DeleteCommentResponse{
 			Id:     id,
 			Status: "not found",
@@ -66,7 +87,7 @@ func (s *Service) DeleteComment(ctx context.Context, comment *pb.DeleteCommentRe
 	dataComment.DeleteComment(findComment)
 
 	return &pb.DeleteCommentResponse{
-		Id:     findComment.ID,
+		Id:     uint32(findComment.ID),
 		Status: "Delete Action",
 	}, nil
 }

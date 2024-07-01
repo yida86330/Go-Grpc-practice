@@ -3,6 +3,7 @@ package gin_service
 import (
 	"context"
 	"net/http"
+	"strconv"
 
 	"go_grpc_practice/internal/models"
 	pb "go_grpc_practice/internal/proto"
@@ -36,7 +37,7 @@ func PostComment(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&commentModel)
 
-	commentProto.Id = commentModel.ID
+	commentProto.Id = uint32(commentModel.ID)
 	commentProto.Message = commentModel.Message
 
 	if err != nil {
@@ -71,11 +72,32 @@ func GetComment(c *gin.Context) {
 		return
 	}
 
+	idUint32, err := strconv.ParseUint(id, 10, 32)
+
 	req := &pb.GetCommentRequest{
-		Id: id,
+		Id: uint32(idUint32),
 	}
 
 	res, err := grpcClient.GetComment(context.Background(), req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
+// @Summary 列出所有留言
+// @Description 列出所有留言
+// @Tags 留言
+// @Accept   json
+// @Produce  json
+// @Success 200 {object} httpResponse
+// @Failure	400 {object}  httpResponse
+// @Router /comments/ [get]
+func ListComment(c *gin.Context) {
+
+	res, err := grpcClient.ListComment(context.Background(), &pb.ListCommentRequest{})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -101,8 +123,10 @@ func DeleteComment(c *gin.Context) {
 		return
 	}
 
+	idUint32, err := strconv.ParseUint(id, 10, 32)
+
 	req := &pb.DeleteCommentRequest{
-		Id: id,
+		Id: uint32(idUint32),
 	}
 
 	res, err := grpcClient.DeleteComment(context.Background(), req)

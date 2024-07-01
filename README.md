@@ -1,6 +1,6 @@
 # Go-Grpc-practice
 
-Gin + swagger + Grpc
+Gin + swagger + Grpc + Gorm + Sqlite/Mysql
 
 安裝 protoc
 sudo apt update
@@ -25,3 +25,10 @@ go get -u gorm.io/driver/sqlite
 安裝mysql
 sudo apt install mysql-server mysql-client
 sudo apt install libmysqlclient-dev
+
+解決wsl無法連接mysql
+https://stackoverflow.com/questions/64883580/wsl-cant-connect-to-local-mysql-server-through-socket-var-run-mysqld-mysqld
+
+chmod 777 -R /var/run/mysqld
+chmod 777 -R /var/lib/mysql
+chmod 777 -R /var/log/mysql

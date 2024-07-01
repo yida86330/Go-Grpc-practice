@@ -11,7 +11,7 @@ type Migrations struct {
 
 func InitMigrations() {
 	migrations := Migrations{
-		DB: SQLiteDB{},
+		DB: MysqlDB{},
 	}
 
 	connection, conErr := migrations.DB.GetConnection()
@@ -20,5 +20,8 @@ func InitMigrations() {
 		log.Println("Connection Error Migrations: ", conErr.Error())
 	}
 
-	connection.AutoMigrate(&models.Comment{})
+	err := connection.AutoMigrate(&models.Comment{})
+	if err != nil {
+		log.Fatalf("failed to migrate database: %v", err)
+	}
 }

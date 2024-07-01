@@ -9,14 +9,15 @@ var dBConnection database.IConnection
 
 type CommentInterFace interface {
 	CreateComment(comment models.Comment) string
-	GetComment(id string) (*models.Comment, error)
+	GetComment(id uint32) (*models.Comment, error)
+	ListComment() ([]models.Comment, error)
 	DeleteComment(comment *models.Comment) (*models.Comment, error)
 }
 
 type dataAccess struct{}
 
 func init() {
-	dBConnection = database.SQLiteDB{}
+	dBConnection = database.MysqlDB{}
 }
 
 func (d dataAccess) CreateComment(comment models.Comment) string {
@@ -31,7 +32,7 @@ func (d dataAccess) CreateComment(comment models.Comment) string {
 	return "created"
 }
 
-func (d dataAccess) GetComment(id string) (*models.Comment, error) {
+func (d dataAccess) GetComment(id uint32) (*models.Comment, error) {
 	connection, err := dBConnection.GetConnection()
 
 	comment := models.Comment{}
@@ -43,6 +44,22 @@ func (d dataAccess) GetComment(id string) (*models.Comment, error) {
 	connection.First(&comment, "id = ?", id)
 
 	return &comment, nil
+}
+
+func (d dataAccess) ListComment() ([]models.Comment, error) {
+	connection, err := dBConnection.GetConnection()
+	var comments []models.Comment
+
+	if err != nil {
+		return nil, err
+	}
+
+	result := connection.Find(&comments)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return comments, nil
 }
 
 func (d dataAccess) DeleteComment(comment *models.Comment) (*models.Comment, error) {
